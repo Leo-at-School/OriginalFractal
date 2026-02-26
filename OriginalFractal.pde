@@ -19,8 +19,53 @@ public double maxIterations = 150;
 
 //Program
 public int maxNum = 2;
-public boolean toggleDraw = true;
+public boolean toggleDraw;
 
+public void getDefaultSettings(int modeInput){
+  if (modeInput == 1){
+    accuracy = 0.01;
+    zoom = 200;
+    mode = 1;
+    offsetX = 0.5;
+    offsetY = 0;
+    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    toggleDraw = true;
+  }
+  
+  if (modeInput == 2){
+    accuracy = 0.01;
+    zoom = 200;
+    mode = 2;
+    offsetX = 0.5;
+    offsetY = 0;
+    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    toggleDraw = true;
+  }
+  
+  if (modeInput == 3){
+    accuracy = 0.01;
+    zoom = 200;
+    mode = 3;
+    offsetX = 0.5;
+    offsetY = 0;
+    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    toggleDraw = true;
+  }
+  
+  if (modeInput == 4){
+    accuracy = 0.01;
+    zoom = 200;
+    mode = 4;
+    offsetX = 0.5;
+    offsetY = 0;
+    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
+    toggleDraw = true;
+  }
+}
 
 public void setup(){
   size(800, 600, P2D);
@@ -28,15 +73,8 @@ public void setup(){
   noSmooth(); //Don't anti-alias for performance
   noStroke(); //Performance
   
-  //Default fractal settings
-  accuracy = 0.01;
-  zoom = 200;
-  mode = 1;
-  offsetX = 0.5;
-  offsetY = 0;
-  offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-  offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-  toggleDraw = true;
+  //Default fractal settings (1: mandelbrot, 2/3: mandelbrot broken, 4: burning ship)
+  getDefaultSettings(1); //doesn't work :(
 }
 
 public void draw(){
@@ -57,50 +95,19 @@ public void draw(){
 public void keyPressed(){
   //Mandelbrot
   if (key == '1'){
-    accuracy = 0.01;
-    zoom = 200;
-    mode = 1;
-    offsetX = 0.5;
-    offsetY = 0;
-    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    toggleDraw = true;
+    getDefaultSettings(1);
   }
   
-  //Broken Mandelbrot #2
   if (key == '2'){
-    accuracy = 0.01;
-    zoom = 200;
-    mode = 2;
-    offsetX = 0.5;
-    offsetY = 0;
-    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    toggleDraw = true;
+    getDefaultSettings(2);
   }
   
-  //Broken Mandelbrot #2
   if (key == '3'){
-    accuracy = 0.01;
-    zoom = 200;
-    mode = 3;
-    offsetX = 0.5;
-    offsetY = 0;
-    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    toggleDraw = true;
+    getDefaultSettings(3);
   }
   
-  //Burning Ship
   if (key == '4'){
-    accuracy = 0.01;
-    zoom = 200;
-    mode = 4;
-    offsetX = 0.5;
-    offsetY = 0;
-    offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
-    toggleDraw = true;
+    getDefaultSettings(4);
   }
   
   if (key == '=' || key == '+'){
@@ -130,6 +137,7 @@ public void keyPressed(){
   }
 }
 
+//Keys that should repeat
 public void repeatKeys(){
   if (key == 'w'){
     offsetY -= offsetYamount;
@@ -154,7 +162,6 @@ public void repeatKeys(){
 
 public void drawFractal(){
   strokeWeight(1);
-  
   loadPixels();
   
   double re, im, pixelScale;
@@ -177,6 +184,7 @@ public void drawFractal(){
         //pixelColor = recurseBurningShip(re, im);
       }
       
+      //Directly access and modify the screen's pixels for faster drawing
       pixelX = (int)Math.floor((re + offsetX)*zoom + width/2);
       pixelY = (int)Math.floor((im - offsetY)*zoom + height/2);
       pixelScale = zoom*accuracy;
@@ -285,6 +293,7 @@ private color recurseMandelbrot(double re, double im){
   return fractalColor;
 }
 
+//Real part of the mandelbrot set
 private double recurseMandelbrotRe(double re, double im, double i){
   if (i == 0){
     return 0;
@@ -293,6 +302,7 @@ private double recurseMandelbrotRe(double re, double im, double i){
   return Math.pow(recurseMandelbrotRe(re, im, i - 1), 2) - Math.pow(recurseMandelbrotIm(re, im, i - 1), 2) + re;
 }
 
+//Imaginary part of the mandelbrot set
 private double recurseMandelbrotIm(double re, double im, double i){
   if (i == 0){
     return 0;
@@ -312,6 +322,7 @@ private color recurseBurningShip(double re, double im){
   return fractalColor;
 }
 
+//Real part of the burning ship fractal
 private double recurseBurningShipRe(double re, double im, double i){
   if (i == 0){
     return 0;
@@ -320,6 +331,7 @@ private double recurseBurningShipRe(double re, double im, double i){
   return Math.abs(Math.pow(recurseBurningShipRe(re, im, i - 1), 2) - Math.pow(recurseBurningShipIm(re, im, i - 1), 2) + re);
 }
 
+//Imaginary part of the burning ship fractal
 private double recurseBurningShipIm(double re, double im, double i){
   if (i == 0){
     return 0;
