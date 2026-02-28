@@ -12,10 +12,11 @@ public double zoom;
 public int mode;
 
 //Settings
+public int maxIterations = 150;
 public color backgroundColor = color(0, 0, 0);
 public color fractalColor = color(255, 255, 255);
-public double brightness = 5;
-public double maxIterations = 150;
+public int brightness = 5;
+public float brightnessFactor = ((float)brightness*255)/maxIterations;
 
 //Program
 public int maxNum = 2;
@@ -23,10 +24,10 @@ public boolean toggleDraw;
 
 public void getDefaultSettings(int modeInput){
   if (modeInput == 1){
-    accuracy = 0.01;
-    zoom = 200;
+    accuracy = 0.005;
+    zoom = 250;
     mode = 1;
-    offsetX = 0.5;
+    offsetX = 0.7;
     offsetY = 0;
     offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
     offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
@@ -34,10 +35,10 @@ public void getDefaultSettings(int modeInput){
   }
   
   if (modeInput == 2){
-    accuracy = 0.01;
-    zoom = 200;
+    accuracy = 0.001;
+    zoom = 2500;
     mode = 2;
-    offsetX = 0.5;
+    offsetX = 1.46;
     offsetY = 0;
     offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
     offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
@@ -45,10 +46,10 @@ public void getDefaultSettings(int modeInput){
   }
   
   if (modeInput == 3){
-    accuracy = 0.01;
-    zoom = 200;
+    accuracy = 0.0015;
+    zoom = 2500;
     mode = 3;
-    offsetX = 0.5;
+    offsetX = 1.47;
     offsetY = 0;
     offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
     offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
@@ -56,11 +57,11 @@ public void getDefaultSettings(int modeInput){
   }
   
   if (modeInput == 4){
-    accuracy = 0.01;
-    zoom = 200;
+    accuracy = 0.000115;
+    zoom = 7500;
     mode = 4;
-    offsetX = 0.5;
-    offsetY = 0;
+    offsetX = 1.76;
+    offsetY = -0.0357;
     offsetXamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
     offsetYamount = Math.min(Math.abs((width*0.02)/zoom), Math.abs((height*0.02)/zoom));
     toggleDraw = true;
@@ -74,7 +75,7 @@ public void setup(){
   noStroke(); //Performance
   
   //Default fractal settings (1: mandelbrot, 2/3: mandelbrot broken, 4: burning ship)
-  getDefaultSettings(1); //doesn't work :(
+  getDefaultSettings(1);
 }
 
 public void draw(){
@@ -88,6 +89,8 @@ public void draw(){
     
     drawFractal();
   }
+  
+  surface.setTitle("Point: (" + offsetX + ", " + offsetY + ")   Accuracy: " + accuracy);
   
   toggleDraw = false;
 }
@@ -213,13 +216,16 @@ public void drawFractal(){
 private color loopMandelbrot(double re, double im){
   double prevResultRe = 0;
   double prevResultIm = 0;
-  double resultRe, resultIm;
+  double resultRe, resultIm, prevReSquared, prevImSquared;
   for (int i = 0; i < maxIterations; i++){
-    resultRe = prevResultRe*prevResultRe - prevResultIm*prevResultIm + re;
+    prevReSquared = prevResultRe*prevResultRe;
+    prevImSquared = prevResultIm*prevResultIm;
+    
+    resultRe = prevReSquared - prevImSquared + re;
     resultIm = 2*prevResultRe*prevResultIm + im;
     
-    if (Math.sqrt(resultRe*resultRe + resultIm*resultIm) >= maxNum){
-      return color(0, 0, (float)((i*brightness)/maxIterations)*255);
+    if (Math.sqrt(prevReSquared + prevImSquared) >= maxNum){
+      return color(0, 0, i*brightnessFactor);
     }
     
     prevResultRe = resultRe;
@@ -232,13 +238,12 @@ private color loopMandelbrot(double re, double im){
 private color loopMandelbrotBroken1(double re, double im){
   double resultRe = 0;
   double resultIm = 0;
-  
   for (int i = 0; i < maxIterations; i++){
     resultRe = resultRe*resultRe - resultIm*resultIm + re;
     resultIm = 2*resultRe*resultIm + im;
     
     if (Math.sqrt(resultRe*resultRe + resultIm*resultIm) >= maxNum){
-      return color(0, 0, (float)((i*brightness)/maxIterations)*255);
+      return color(0, 0, i*brightnessFactor);
     }
   }
   
@@ -248,13 +253,12 @@ private color loopMandelbrotBroken1(double re, double im){
 private color loopMandelbrotBroken2(double re, double im){
   double resultRe = 0;
   double resultIm = 0;
-  
   for (int i = 0; i < maxIterations; i++){
     resultIm = 2*resultRe*resultIm + im;
     resultRe = resultRe*resultRe - resultIm*resultIm + re;
     
     if (Math.sqrt(resultRe*resultRe + resultIm*resultIm) >= maxNum){
-      return color(0, 0, (float)((i*brightness)/maxIterations)*255);
+      return color(0, 0, i*brightnessFactor);
     }
   }
   
@@ -264,13 +268,16 @@ private color loopMandelbrotBroken2(double re, double im){
 private color loopBurningShip(double re, double im){
   double prevResultRe = 0;
   double prevResultIm = 0;
-  double resultRe, resultIm;
+  double resultRe, resultIm, prevReSquared, prevImSquared;
   for (int i = 0; i < maxIterations; i++){
-    resultRe = Math.abs(prevResultRe*prevResultRe - prevResultIm*prevResultIm + re);
+    prevReSquared = prevResultRe*prevResultRe;
+    prevImSquared = prevResultIm*prevResultIm;
+    
+    resultRe = Math.abs(prevReSquared - prevImSquared + re);
     resultIm = Math.abs(2*prevResultRe*prevResultIm + im);
     
-    if (Math.sqrt(resultRe*resultRe + resultIm*resultIm) >= maxNum){
-      return color(0, 0, (float)((i*brightness)/maxIterations)*255);
+    if (Math.sqrt(prevReSquared + prevImSquared) >= maxNum){
+      return color(0, 0, i*brightnessFactor);
     }
     
     prevResultRe = resultRe;
