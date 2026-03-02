@@ -162,8 +162,8 @@ public void drawFractal(){
   double re, im, pixelScale;
   int pixelX, pixelY, pixelXTemp, pixelYTemp, pixelIndex;
   color pixelColor = color(255, 0, 0); //Any red on screen = bad
-  for (double j = Math.max(-2, -height/zoom + offsetY); j < Math.min(2, height/zoom + offsetY); j += accuracy){
-    for (double i = Math.max(-2, -width/zoom - offsetX); i < Math.min(2, width/zoom - offsetX); i += accuracy){
+  for (double j = Math.max(-2, -height/(2*zoom) + offsetY); j < Math.min(2, height/(2*zoom) + offsetY); j += accuracy){
+    for (double i = Math.max(-2, -width/(2*zoom) - offsetX); i < Math.min(2, width/(2*zoom) - offsetX); i += accuracy){
       re = i;
       im = j;
       
@@ -334,3 +334,4 @@ private double recurseBurningShipIm(double a, double b, double i){
   
   return Math.abs(2*recurseBurningShipRe(a, b, i - 1)*recurseBurningShipIm(a, b, i - 1) + b);
 }
+
