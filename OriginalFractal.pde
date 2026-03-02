@@ -1,6 +1,7 @@
 //SCROLL TO BOTTOM FOR RECURSIVE VERSIONS OF THE MANDELBROT AND BURNING SHIP FRACTAL
 //LOOK INTO THE DrawFractal METHOD TO SWITCH TO RENDERING WITH THESE RECURSIVE FUNCTIONS
-//UNCOMMENT THE FUNCTIONS SSTARTING WITH recursive IN ITS NAME AND COMMENT THE FUNCTIONS WITH loop IN ITS NAME
+//UNCOMMENT THE FUNCTIONS STARTING WITH recursive IN ITS NAME AND COMMENT THE FUNCTIONS WITH loop IN ITS NAME
+//REDUCE THE depth AND INCREASE THE accuracy VARIABLES A LOT
 
 //User controlled data
 public double accuracy; //Larger number -> less accurate 
@@ -12,11 +13,11 @@ public double zoom;
 public int mode;
 
 //Settings
-public int maxIterations = 150;
+public int depth = 150;
 public color backgroundColor = color(0, 0, 0);
 public color fractalColor = color(255, 255, 255);
 public int brightness = 5;
-public float brightnessFactor = ((float)brightness*255)/maxIterations;
+public float brightnessFactor = ((float)brightness*255)/depth;
 
 //Program
 public int maxNum = 2;
@@ -208,7 +209,7 @@ private color loopMandelbrot(double a, double b){
   double prevRe = 0;
   double prevIm = 0;
   double re, im;
-  for (int i = 0; i < maxIterations; i++){
+  for (int i = 0; i < depth; i++){
     re = prevRe*prevRe - prevIm*prevIm + a;
     im = 2*prevRe*prevIm + b;
     
@@ -226,7 +227,7 @@ private color loopMandelbrot(double a, double b){
 private color loopMandelbrotBroken1(double a, double b){
   double re = 0;
   double im = 0;
-  for (int i = 0; i < maxIterations; i++){
+  for (int i = 0; i < depth; i++){
     re = re*re - im*im + a;
     im = 2*re*im + b;
     
@@ -241,7 +242,7 @@ private color loopMandelbrotBroken1(double a, double b){
 private color loopMandelbrotBroken2(double a, double b){
   double re = 0;
   double im = 0;
-  for (int i = 0; i < maxIterations; i++){
+  for (int i = 0; i < depth; i++){
     im = 2*re*im + b;
     re = re*re - im*im + a;
     
@@ -257,7 +258,7 @@ private color loopBurningShip(double a, double b){
   double prevRe = 0;
   double prevIm = 0;
   double re, im;
-  for (int i = 0; i < maxIterations; i++){
+  for (int i = 0; i < depth; i++){
     re = Math.abs(prevRe*prevRe - prevIm*prevIm + a);
     im = Math.abs(2*prevRe*prevIm + b);
     
@@ -276,8 +277,8 @@ private color loopBurningShip(double a, double b){
 
 //Mandelbrot set
 private color recurseMandelbrot(double a, double b){
-  double reFinal = recurseMandelbrotRe(a, b, maxIterations);
-  double imFinal = recurseMandelbrotIm(a, b, maxIterations);
+  double reFinal = recurseMandelbrotRe(a, b, depth);
+  double imFinal = recurseMandelbrotIm(a, b, depth);
   
   if (Math.sqrt(reFinal*reFinal + imFinal*imFinal) >= maxNum){
     return color(0, 0, 0);
@@ -306,8 +307,8 @@ private double recurseMandelbrotIm(double a, double b, double i){
 
 //Burning ship fractal
 private color recurseBurningShip(double a, double b){
-  double reFinal = recurseBurningShipRe(a, b, maxIterations);
-  double imFinal = recurseBurningShipIm(a, b, maxIterations);
+  double reFinal = recurseBurningShipRe(a, b, depth);
+  double imFinal = recurseBurningShipIm(a, b, depth);
   
   if (Math.sqrt(reFinal*reFinal + imFinal*imFinal) >= maxNum){
     return color(0, 0, 0);
@@ -333,4 +334,3 @@ private double recurseBurningShipIm(double a, double b, double i){
   
   return Math.abs(2*recurseBurningShipRe(a, b, i - 1)*recurseBurningShipIm(a, b, i - 1) + b);
 }
-
