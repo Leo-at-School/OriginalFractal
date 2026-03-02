@@ -79,10 +79,6 @@ public void setup(){
 }
 
 public void draw(){
-  if (keyPressed){
-    repeatKeys();
-  }
-  
   if (toggleDraw){
     fill(backgroundColor);
     rect(0, 0, width, height);
@@ -112,6 +108,26 @@ public void keyPressed(){
   if (key == '4'){
     getDefaultSettings(4);
   }
+
+  if (key == 'w'){
+    offsetY -= offsetYamount;
+    toggleDraw = true;
+  }
+  
+  if (key == 'a'){
+    offsetX += offsetXamount;
+    toggleDraw = true;
+  }
+  
+  if (key == 's'){
+    offsetY += offsetYamount;
+    toggleDraw = true;
+  }
+  
+  if (key == 'd'){
+    offsetX -= offsetXamount;
+    toggleDraw = true;
+  }
   
   if (key == '=' || key == '+'){
     zoom *= 1.5;
@@ -137,29 +153,6 @@ public void keyPressed(){
       accuracy *= 2;
       toggleDraw = true;
     }
-  }
-}
-
-//Keys that should repeat
-public void repeatKeys(){
-  if (key == 'w'){
-    offsetY -= offsetYamount;
-    toggleDraw = true;
-  }
-  
-  if (key == 'a'){
-    offsetX += offsetXamount;
-    toggleDraw = true;
-  }
-  
-  if (key == 's'){
-    offsetY += offsetYamount;
-    toggleDraw = true;
-  }
-  
-  if (key == 'd'){
-    offsetX -= offsetXamount;
-    toggleDraw = true;
   }
 }
 
@@ -346,3 +339,4 @@ private double recurseBurningShipIm(double re, double im, double i){
   
   return Math.abs(2*recurseBurningShipRe(re, im, i - 1)*recurseBurningShipIm(re, im, i - 1) + im);
 }
+
