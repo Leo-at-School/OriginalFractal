@@ -86,6 +86,8 @@ public void draw(){
     drawFractal();
   }
   
+  surface.setTitle("Point: (" + offsetX + ", " + offsetY + ")   Accuracy: " + accuracy);
+  
   toggleDraw = false;
 }
 
@@ -204,51 +206,33 @@ public void drawFractal(){
 
 //LOOPING FUNCTIONS
 
-private color loopMandelbrot(double re, double im){
-  double prevResultRe = 0;
-  double prevResultIm = 0;
-  double resultRe, resultIm, prevReSquared, prevImSquared;
+private color loopMandelbrot(double a, double b){
+  double prevRe = 0;
+  double prevIm = 0;
+  double re, im;
   for (int i = 0; i < maxIterations; i++){
-    prevReSquared = prevResultRe*prevResultRe;
-    prevImSquared = prevResultIm*prevResultIm;
+    re = prevRe*prevRe - prevIm*prevIm + a;
+    im = 2*prevRe*prevIm + b;
     
-    resultRe = prevReSquared - prevImSquared + re;
-    resultIm = 2*prevResultRe*prevResultIm + im;
-    
-    if (Math.sqrt(prevReSquared + prevImSquared) >= maxNum){
+    if (Math.sqrt(re*re + im*im) >= maxNum){
       return color(0, 0, i*brightnessFactor);
     }
     
-    prevResultRe = resultRe;
-    prevResultIm = resultIm;
+    prevRe = re;
+    prevIm = im;
   }
   
   return fractalColor;
 }
 
-private color loopMandelbrotBroken1(double re, double im){
-  double resultRe = 0;
-  double resultIm = 0;
+private color loopMandelbrotBroken1(double a, double b){
+  double re = 0;
+  double im = 0;
   for (int i = 0; i < maxIterations; i++){
-    resultRe = resultRe*resultRe - resultIm*resultIm + re;
-    resultIm = 2*resultRe*resultIm + im;
+    re = re*re - im*im + a;
+    im = 2*re*im + b;
     
-    if (Math.sqrt(resultRe*resultRe + resultIm*resultIm) >= maxNum){
-      return color(0, 0, i*brightnessFactor);
-    }
-  }
-  
-  return fractalColor;
-}
-
-private color loopMandelbrotBroken2(double re, double im){
-  double resultRe = 0;
-  double resultIm = 0;
-  for (int i = 0; i < maxIterations; i++){
-    resultIm = 2*resultRe*resultIm + im;
-    resultRe = resultRe*resultRe - resultIm*resultIm + re;
-    
-    if (Math.sqrt(resultRe*resultRe + resultIm*resultIm) >= maxNum){
+    if (Math.sqrt(re*re + im*im) >= maxNum){
       return color(0, 0, i*brightnessFactor);
     }
   }
@@ -256,23 +240,35 @@ private color loopMandelbrotBroken2(double re, double im){
   return fractalColor;
 }
 
-private color loopBurningShip(double re, double im){
-  double prevResultRe = 0;
-  double prevResultIm = 0;
-  double resultRe, resultIm, prevReSquared, prevImSquared;
+private color loopMandelbrotBroken2(double a, double b){
+  double re = 0;
+  double im = 0;
   for (int i = 0; i < maxIterations; i++){
-    prevReSquared = prevResultRe*prevResultRe;
-    prevImSquared = prevResultIm*prevResultIm;
+    im = 2*re*im + b;
+    re = re*re - im*im + a;
     
-    resultRe = Math.abs(prevReSquared - prevImSquared + re);
-    resultIm = Math.abs(2*prevResultRe*prevResultIm + im);
+    if (Math.sqrt(re*re + im*im) >= maxNum){
+      return color(0, 0, i*brightnessFactor);
+    }
+  }
+  
+  return fractalColor;
+}
+
+private color loopBurningShip(double a, double b){
+  double prevRe = 0;
+  double prevIm = 0;
+  double re, im;
+  for (int i = 0; i < maxIterations; i++){
+    re = Math.abs(prevRe*prevRe - prevIm*prevIm + a);
+    im = Math.abs(2*prevRe*prevIm + b);
     
-    if (Math.sqrt(prevReSquared + prevImSquared) >= maxNum){
+    if (Math.sqrt(re*re + im*im) >= maxNum){
       return color(0, 0, i*brightnessFactor);
     }
     
-    prevResultRe = resultRe;
-    prevResultIm = resultIm;
+    prevRe = re;
+    prevIm = im;
   }
   
   return fractalColor;
@@ -280,9 +276,10 @@ private color loopBurningShip(double re, double im){
 
 //RECURSIVE FUNCTIONS
 
-private color recurseMandelbrot(double re, double im){
-  double reFinal = recurseMandelbrotRe(re, im, maxIterations);
-  double imFinal = recurseMandelbrotIm(re, im, maxIterations);
+//Mandelbrot set
+private color recurseMandelbrot(double a, double b){
+  double reFinal = recurseMandelbrotRe(a, b, maxIterations);
+  double imFinal = recurseMandelbrotIm(a, b, maxIterations);
   
   if (Math.sqrt(reFinal*reFinal + imFinal*imFinal) >= maxNum){
     return color(0, 0, 0);
@@ -292,26 +289,27 @@ private color recurseMandelbrot(double re, double im){
 }
 
 //Real part of the mandelbrot set
-private double recurseMandelbrotRe(double re, double im, double i){
+private double recurseMandelbrotRe(double a, double b, double i){
   if (i == 0){
     return 0;
   }
   
-  return Math.pow(recurseMandelbrotRe(re, im, i - 1), 2) - Math.pow(recurseMandelbrotIm(re, im, i - 1), 2) + re;
+  return Math.pow(recurseMandelbrotRe(a, b, i - 1), 2) - Math.pow(recurseMandelbrotIm(a, b, i - 1), 2) + a;
 }
 
 //Imaginary part of the mandelbrot set
-private double recurseMandelbrotIm(double re, double im, double i){
+private double recurseMandelbrotIm(double a, double b, double i){
   if (i == 0){
     return 0;
   }
   
-  return 2*recurseMandelbrotRe(re, im, i - 1)*recurseMandelbrotIm(re, im, i - 1) + im;
+  return 2*recurseMandelbrotRe(a, b, i - 1)*recurseMandelbrotIm(a, b, i - 1) + b;
 }
 
-private color recurseBurningShip(double re, double im){
-  double reFinal = recurseBurningShipRe(re, im, maxIterations);
-  double imFinal = recurseBurningShipIm(re, im, maxIterations);
+//Burning ship fractal
+private color recurseBurningShip(double a, double b){
+  double reFinal = recurseBurningShipRe(a, b, maxIterations);
+  double imFinal = recurseBurningShipIm(a, b, maxIterations);
   
   if (Math.sqrt(reFinal*reFinal + imFinal*imFinal) >= maxNum){
     return color(0, 0, 0);
@@ -321,21 +319,19 @@ private color recurseBurningShip(double re, double im){
 }
 
 //Real part of the burning ship fractal
-private double recurseBurningShipRe(double re, double im, double i){
+private double recurseBurningShipRe(double a, double b, double i){
   if (i == 0){
     return 0;
   }
   
-  return Math.abs(Math.pow(recurseBurningShipRe(re, im, i - 1), 2) - Math.pow(recurseBurningShipIm(re, im, i - 1), 2) + re);
+  return Math.abs(Math.pow(recurseBurningShipRe(a, b, i - 1), 2) - Math.pow(recurseBurningShipIm(a, b, i - 1), 2) + a);
 }
 
 //Imaginary part of the burning ship fractal
-private double recurseBurningShipIm(double re, double im, double i){
+private double recurseBurningShipIm(double a, double b, double i){
   if (i == 0){
     return 0;
   }
   
-  return Math.abs(2*recurseBurningShipRe(re, im, i - 1)*recurseBurningShipIm(re, im, i - 1) + im);
+  return Math.abs(2*recurseBurningShipRe(a, b, i - 1)*recurseBurningShipIm(a, b, i - 1) + b);
 }
-
-
