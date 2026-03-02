@@ -86,8 +86,6 @@ public void draw(){
     drawFractal();
   }
   
-  surface.setTitle("Point: (" + offsetX + ", " + offsetY + ")   Accuracy: " + accuracy);
-  
   toggleDraw = false;
 }
 
@@ -339,4 +337,5 @@ private double recurseBurningShipIm(double re, double im, double i){
   
   return Math.abs(2*recurseBurningShipRe(re, im, i - 1)*recurseBurningShipIm(re, im, i - 1) + im);
 }
+
 
