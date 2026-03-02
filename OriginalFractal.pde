@@ -1,6 +1,6 @@
 //SCROLL TO BOTTOM FOR RECURSIVE VERSIONS OF THE MANDELBROT AND BURNING SHIP FRACTAL
 //LOOK INTO THE DrawFractal METHOD TO SWITCH TO RENDERING WITH THESE RECURSIVE FUNCTIONS
-//UNCOMMENT THE FUNCTIONS STARTING WITH recursive IN ITS NAME AND COMMENT THE FUNCTIONS WITH loop IN ITS NAME
+//UNCOMMENT THE FUNCTIONS SSTARTING WITH recursive IN ITS NAME AND COMMENT THE FUNCTIONS WITH loop IN ITS NAME
 
 //User controlled data
 public double accuracy; //Larger number -> less accurate 
@@ -335,4 +335,3 @@ private double recurseBurningShipIm(double a, double b, double i){
   
   return Math.abs(2*recurseBurningShipRe(a, b, i - 1)*recurseBurningShipIm(a, b, i - 1) + b);
 }
-
